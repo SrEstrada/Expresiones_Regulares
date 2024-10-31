@@ -11,18 +11,25 @@ my $operacion = $query->param('operacion');
 print "<html><body>";
 print "<h1>Resultado</h1>";
 
-# Verificamos que solo se usen caracteres válidos
+# Validación de caracteres permitidos
 if ($operacion =~ /^[\d+\-*\/\(\)\s]+$/) {
-    # Expresión regular para identificar números y operadores básicos
+    # Expresión regular para identificar números y operadores
     if ($operacion =~ /^(\d+)([+\-*\/])(\d+)$/) {
         my ($num1, $op, $num2) = ($1, $2, $3);
         my $resultado;
 
-        # Realizar la operación de acuerdo al operador
         if ($op eq '+') {
             $resultado = $num1 + $num2;
         } elsif ($op eq '-') {
             $resultado = $num1 - $num2;
+        } elsif ($op eq '*') {
+            $resultado = $num1 * $num2;
+        } elsif ($op eq '/') {
+            if ($num2 == 0) {
+                $resultado = "Error: División por cero";
+            } else {
+                $resultado = $num1 / $num2;
+            }
         }
 
         # Mostrar el resultado
