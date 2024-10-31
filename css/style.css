@@ -6,3 +6,12 @@ body {
     margin: 0;
     padding: 0;
 }
+
+form {
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    width: 300px;
+    background-color: #fff;
+    border-radius: 8px;
+}
