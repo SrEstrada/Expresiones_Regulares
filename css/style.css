@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-image: url('../images/background.jpg'); /* Fondo divertido */
+    background-size: cover;
     color: #333;
     text-align: center;
     margin: 0;
@@ -12,6 +13,6 @@ form {
     padding: 20px;
     border: 1px solid #ddd;
     width: 300px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
 }
