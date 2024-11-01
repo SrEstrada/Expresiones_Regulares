@@ -2,13 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Calculadora</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora con Expresiones Regulares</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Calculadora</h1>
-    <form action="../cgi-bin/Calculadora.pl" method="POST">
-        <input type="text" name="operacion" placeholder="Ejemplo: 12+5*3" required>
+    <h1>Calculadora con Expresiones Regulares</h1>
+    <p>Ingrese una operación en formato aritmético. Ejemplo: (12+5)*3</p>
+    <form action="cgi-bin/Calculadora.pl" method="GET">
+        <input type="text" name="operacion" placeholder="Escribe tu operación aquí">
         <button type="submit">Calcular</button>
     </form>
 </body>
