@@ -7,16 +7,26 @@ print header();
 
 my $query = CGI->new;
 my $operacion = $query->param('operacion');
-# Eliminación de espacios en blanco
-$operacion =~ s/\s+//g;
+$operacion =~ s/\s+//g;  # Eliminación de espacios en blanco
 
 print "<html><body>";
 print "<h1>Resultado</h1>";
 
 # Validación de caracteres permitidos
 if ($operacion =~ /^[\d+\-*\/\(\)\s]+$/) {
-    # Expresión regular para identificar números y operadores
-    if ($operacion =~ /^(\d+)([+\-*\/])(\d+)$/) {
+    # Identificar si hay paréntesis o múltiples operaciones complejas
+    if ($operacion =~ /[\(\)]/) {
+        # Usar eval para resolver operaciones con paréntesis
+        my $resultado = eval $operacion;
+        if ($@) {
+            print "<p>Error en la expresión: $@</p>";
+        } else {
+            print "<p>Operación: $operacion</p>";
+            print "<p>Resultado: $resultado</p>";
+        }
+    }
+    elsif ($operacion =~ /^(\d+)([+\-*\/])(\d+)$/) {
+        # Expresión simple sin paréntesis
         my ($num1, $op, $num2) = ($1, $2, $3);
         my $resultado;
 
