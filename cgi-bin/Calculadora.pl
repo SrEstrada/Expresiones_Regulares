@@ -7,6 +7,8 @@ print header();
 
 my $query = CGI->new;
 my $operacion = $query->param('operacion');
+# Eliminación de espacios en blanco
+$operacion =~ s/\s+//g;
 
 print "<html><body>";
 print "<h1>Resultado</h1>";
