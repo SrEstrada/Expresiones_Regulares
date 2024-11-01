@@ -12,11 +12,14 @@ $operacion =~ s/\s+//g;  # Eliminación de espacios en blanco
 print "<html><body>";
 print "<h1>Resultado</h1>";
 
-# Validación de caracteres permitidos
+# Validación de caracteres permitidos y formato correcto
 if ($operacion =~ /^[\d+\-*\/\(\)\s]+$/) {
-    # Identificar si hay paréntesis o múltiples operaciones complejas
-    if ($operacion =~ /[\(\)]/) {
-        # Usar eval para resolver operaciones con paréntesis
+    # Verificar si hay operadores consecutivos o paréntesis desbalanceados
+    if ($operacion =~ /[\+\-\*\/]{2,}/ || $operacion =~ /\(\)/) {
+        print "<p>Error: Operación mal formada (operadores consecutivos o paréntesis vacíos).</p>";
+    }
+    # Detectar paréntesis y evaluar con `eval` solo si es necesario
+    elsif ($operacion =~ /[\(\)]/) {
         my $resultado = eval $operacion;
         if ($@) {
             print "<p>Error en la expresión: $@</p>";
@@ -25,8 +28,8 @@ if ($operacion =~ /^[\d+\-*\/\(\)\s]+$/) {
             print "<p>Resultado: $resultado</p>";
         }
     }
+    # Caso de una operación simple de dos operandos
     elsif ($operacion =~ /^(\d+)([+\-*\/])(\d+)$/) {
-        # Expresión simple sin paréntesis
         my ($num1, $op, $num2) = ($1, $2, $3);
         my $resultado;
 
@@ -44,7 +47,6 @@ if ($operacion =~ /^[\d+\-*\/\(\)\s]+$/) {
             }
         }
 
-        # Mostrar el resultado
         print "<p>Operación: $operacion</p>";
         print "<p>Resultado: $resultado</p>";
     } else {
