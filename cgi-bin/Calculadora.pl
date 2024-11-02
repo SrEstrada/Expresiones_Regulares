@@ -1,55 +1,65 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 use strict;
 use warnings;
-use CGI ':standard';
+use CGI;
+use utf8;
 
-print header();
+my $q = CGI->new;
 
-my $query = CGI->new;
-my $operacion = $query->param('operacion');
-$operacion =~ s/\s+//g;
+# Subrutina principal que maneja la lógica de la calculadora
+sub contenido {
+    my $operacion = $q->param('operacion') // '';
+    my $resultado;
 
-print "<html><body>";
-print "<h1>Resultado</h1>";
-
-# Validación de caracteres permitidos
-if ($operacion =~ /^[\d+\-*\/\(\)\s]+$/) {
-    # Verificar formato inicial y final y balanceo de paréntesis
-    if ($operacion =~ /^[\+\-*\/]/ || $operacion =~ /[\+\-*\/]$/ || $operacion =~ /\(\)/ || $operacion =~ /[\+\-\*\/]{2,}/) {
-        print "<p>Error: Operación mal formada (operadores consecutivos, inicio o fin inválido, paréntesis vacíos).</p>";
-    } 
-    # Evaluar con `eval` si hay paréntesis
-    elsif ($operacion =~ /[\(\)]/) {
-        my $resultado = eval $operacion;
-        if ($@) {
-            print "<p>Error en la expresión: $@</p>";
+    if (defined $operacion && $operacion ne '') {
+        # Validación de caracteres permitidos en la operación
+        if ($operacion =~ /^[\d\+\-\*\/\(\) ]+$/) {
+            # Intentar evaluar la operación con `eval`
+            eval {
+                $resultado = eval $operacion;
+            };
+            if ($@) {
+                $resultado = "Error en la expresión: $@";
+            }
         } else {
-            print "<p>Operación: $operacion</p>";
-            print "<p>Resultado: $resultado</p>";
+            $resultado = "Expresión no válida: solo se permiten números y operadores.";
         }
-    }
-    # Para operaciones simples
-    elsif ($operacion =~ /^(\d+)([+\-*\/])(\d+)$/) {
-        my ($num1, $op, $num2) = ($1, $2, $3);
-        my $resultado;
-
-        if ($op eq '+') {
-            $resultado = $num1 + $num2;
-        } elsif ($op eq '-') {
-            $resultado = $num1 - $num2;
-        } elsif ($op eq '*') {
-            $resultado = $num1 * $num2;
-        } elsif ($op eq '/') {
-            $resultado = $num2 == 0 ? "Error: División por cero" : $num1 / $num2;
-        }
-
-        print "<p>Operación: $operacion</p>";
-        print "<p>Resultado: $resultado</p>";
     } else {
-        print "<p>Operación inválida.</p>";
+        $resultado = "No se ha ingresado ninguna expresión.";
     }
-} else {
-    print "<p>Error: La operación contiene caracteres no válidos.</p>";
+    
+    return generarHTML($operacion, $resultado);
 }
 
-print "</body></html>";
+# Subrutina que genera el HTML
+sub generarHTML {
+    my ($operacion, $resultado) = @_;
+    
+    print $q->header('text/html; charset=UTF-8');
+    print <<"HTML";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="calculadora">
+        <h1>Calculadora</h1>
+        <form action="/cgi-bin/calcular.pl" method="post">
+            <input type="text" name="operacion" placeholder="Ingrese expresión" value="$operacion" required>
+            <button type="submit">Calcular</button>
+        </form>
+    </div>
+HTML
+
+    if (defined $resultado) {
+        print "<h2>Resultado: $resultado</h2>";
+    }
+
+    print "</body></html>";
+}
+
+# Llamar a la subrutina principal
+contenido();
